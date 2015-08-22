@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<!-- <aop:scoped-proxy proxy-target-class="true"/> -->
+
+	<bean id="passenger"
+		class="com.springone.ioc.asingletonhasbprototype.javadynamicproxy.PassengerImpl">
+		<lookup-method name="getDayBusPass" bean="dayBusPass"/>
+	</bean>
+
+	<bean id="dayBusPass" scope="prototype"
+		class="com.springone.ioc.asingletonhasbprototype.javadynamicproxy.DayBusPass">
+		<!-- Are class-based (CGLIB) proxies to be created? This is the default; 
+			in order to switch to standard Java interface-based proxies, turn this flag 
+			to "false". -->
+		<aop:scoped-proxy proxy-target-class="true"/>
+	</bean>
+</beans>
+
+<!-- 
+NOTE :: In case of this, we can configure proxy in 2 ways :
+
+ 1. 'CGLIB'  library, which directly subclasses the object. This is the default option 
+		of Spring. For this, we must have CGLIB library our class path. 
+ 2. 'Java  Dynamic Proxies', For this to be activated, we have to call: 
+ 		in XML, <aop:scoped-proxy proxy-target-class="false"/>
+-->
+
+
+
+<!-- code wise spring could be doing the overriding :
+Like :
+
+passenger passenger = new com.springone.ioc.asingletonhasbprototype.cglib.Passenger(){
+    
+    @Override
+    public DayBusPass getDayBusPass(){
+        return context.getBean("dayBusPass");
+    }
+};
+
+ -->
